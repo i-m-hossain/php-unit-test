@@ -1,7 +1,38 @@
+## Fixtures:
+
+While making cases dependent on each other can be a way to use same class instance and code reuse, It still messes up our code and introduces ambiguity. Better way to handle this issue is to introduce `fixture`. It is only setting up a method in the test class named as `setUp()` and using a property which is initialized by `setUp()` method.
+
+- `setUp()` method runs before any test case is run
+
+Another method we can use is `tearDown()` method which runs after each test case is run. However, `tearDown()` method is not necessarily have to be used all the time. There are certain use cases i.e. 
+
+- creating a lot of objects that consume a lot of memory, 
+- if we are creating external resources(writing to a file while opening a network socket)
+
+Example:
+
+```
+
+class QueueTest extends TestCase{
+    protected $queue;
+    protected function setUp(): void
+    {
+        $this->queue = new Queue;
+    }
+    protected function tearDown():void{
+        unset($this->queue);
+    }
+}
+
+```
+
+Now, we can use that property in all our assertions.
+
 ## Making a test case dependent on another:
 
 Some cases, one test case might be dependent on another test case. To handle this scenario, we can use `@depends testName` annotation as php comment doc. and then we can pass a reference of the referenced class as parameter to the dependent test function.
 Two types of test based on dependency:
+
 1. The dependent test is known as `consumer`
 2. The test we depend on is know as `producer`
 
